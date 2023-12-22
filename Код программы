@@ -221,21 +221,21 @@ Begin
         Writeln('Игрок ', Players[CurrentPlayer], ', введите 3 глагола:');
         For I := 0 To 2 Do
         Begin
-                    Repeat
-            Begin
-                EnterStr(Word);
-                CurrentWord.Verbs[I] := Word;
-                If UsedWords.IndexOf(CurrentWord.Verbs[I]) = -1 Then
+            Repeat
                 Begin
-                    UsedWords.Add(CurrentWord.Verbs[I]);
-                    ValidWord := True;
-                End
-                Else
-                Begin
-                    Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
-                    ValidWord := False;
+                    EnterStr(Word);
+                    CurrentWord.Verbs[I] := Word;
+                    If UsedWords.IndexOf(CurrentWord.Verbs[I]) = -1 Then
+                    Begin
+                        UsedWords.Add(CurrentWord.Verbs[I]);
+                        ValidWord := True;
+                    End
+                    Else
+                    Begin
+                        Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
+                        ValidWord := False;
+                    End;
                 End;
-            End;
             Until ValidWord;
         End;
         //ввод трех существительных
@@ -243,20 +243,20 @@ Begin
         For I := 0 To 2 Do
         Begin
             Repeat
-            Begin
-                EnterStr(Word);
-                CurrentWord.Nouns[I] := Word;
-                If UsedWords.IndexOf(CurrentWord.Nouns[I]) = -1 Then
                 Begin
-                    UsedWords.Add(CurrentWord.Nouns[I]);
-                    ValidWord := True;
-                End
-                Else
-                Begin
-                    Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
-                    ValidWord := False;
+                    EnterStr(Word);
+                    CurrentWord.Nouns[I] := Word;
+                    If UsedWords.IndexOf(CurrentWord.Nouns[I]) = -1 Then
+                    Begin
+                        UsedWords.Add(CurrentWord.Nouns[I]);
+                        ValidWord := True;
+                    End
+                    Else
+                    Begin
+                        Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
+                        ValidWord := False;
+                    End;
                 End;
-            End;
             Until ValidWord;
         End;
 
@@ -284,7 +284,7 @@ Begin
                 If Guess = CurrentWord.Word Then
                 Begin
                     Writeln('Правильно! Вы зарабатываете 3 очка.');
-                    Scores[CurrentPlayer] := Scores[CurrentPlayer] + 3;
+                    Scores[(CurrentPlayer + 1) Mod NumPlayers] := Scores[(CurrentPlayer + 1) Mod NumPlayers ]  + 3;
                     If Scores[CurrentPlayer] >= 15 Then
                     Begin
                         GameFinished := True;
@@ -308,10 +308,9 @@ Begin
                     Begin
                     //если игрок2 угадал со второй попытки
                         Writeln('Правильно! Вы зарабатываете 2 очка.');
-                        Scores[CurrentPlayer] := Scores[CurrentPlayer] + 2;
+                        Scores[(CurrentPlayer + 1) Mod NumPlayers] := Scores[(CurrentPlayer + 1) Mod NumPlayers] + 2;
                         If Scores[CurrentPlayer] >= 15 Then
                         Begin
-                            GameFinished := True;
                             GameFinished := True;
                             Break;
                         End;
@@ -333,7 +332,7 @@ Begin
                         Begin
                         //если игрок2 угадал с третьей попытки
                             Writeln('Правильно! Вы зарабатываете очко.');
-                            Scores[CurrentPlayer] := Scores[CurrentPlayer] + 1;
+                            Scores[(CurrentPlayer + 1) Mod NumPlayers] := Scores[(CurrentPlayer + 1) Mod NumPlayers] + 1;
                             If Scores[CurrentPlayer] >= 15 Then
                             Begin
                                 GameFinished := True;
@@ -342,7 +341,11 @@ Begin
                         End
                         Else
                         //если игрок2 не угадал слово
+                         Begin
+                        
                             Writeln('Неправильно! Это слово: "', CurrentWord.Word, '".');
+                            Scores[CurrentPlayer] := Scores[CurrentPlayer] - 1;
+                        End;                            
                     End;
                 End;
             End;
