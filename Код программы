@@ -95,7 +95,8 @@ Begin
 End;
 Function ChooseStartingWord():String;
 Var
-    WordChoice: Integer;    StartingWords: Array Of String;
+    WordChoice: Integer;
+    StartingWords: Array Of String;
     WordList: TStringList;
 Begin
     WordList := TStringList.Create;
@@ -112,12 +113,12 @@ Begin
     WordList.Add('гантеля');
     WordList.Add('пистолет');
     Randomize();
-    WordChoice := RandomRange(0, WordList.Count - 1);   
+    WordChoice := RandomRange(0, WordList.Count - 1);
     Result := WordList[WordChoice];
     Writeln('Ваше слово :' , Result);
     WordList.Delete(WordChoice);
 End;
- 
+
 //поиск макс количества баллов
 Function GetMaxScore(Scores: Array Of Integer): Integer;
 Var
@@ -264,7 +265,7 @@ Begin
         Writeln('Текущее слово: ', CurrentWord.Word);
         For I := 0 To 41 Do
             Writeln;
-        
+
         For I := 0 To NumPlayers - 1 Do
         Begin
         //CurrentPlayer номер игрока
@@ -342,10 +343,10 @@ Begin
                         Else
                         //если игрок2 не угадал слово
                          Begin
-                        
+
                             Writeln('Неправильно! Это слово: "', CurrentWord.Word, '".');
                             Scores[CurrentPlayer] := Scores[CurrentPlayer] - 1;
-                        End;                            
+                        End;
                     End;
                 End;
             End;
