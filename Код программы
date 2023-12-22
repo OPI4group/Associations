@@ -96,16 +96,26 @@ End;
 Function ChooseStartingWord():String;
 Var
     WordChoice: Integer;    StartingWords: Array Of String;
+    WordList: TStringList;
 Begin
-    SetLength(StartingWords, 8);
-    StartingWords[0]:= 'мотоцикл';    StartingWords[1]:= 'преподаватель';
-    StartingWords[2]:= 'гимнаст';    StartingWords[3]:= 'фанта';
-    StartingWords[4]:= 'собака';    StartingWords[5]:= 'клоун';
-    StartingWords[6]:= 'пистолет';    StartingWords[7]:= 'гантеля';
+    WordList := TStringList.Create;
+//    StartingWords[0]:= 'мотоцикл';    StartingWords[1]:= 'преподаватель';
+//    StartingWords[2]:= 'гимнаст';    StartingWords[3]:= 'фанта';
+//    StartingWords[4]:= 'собака';    StartingWords[5]:= 'клоун';
+//    StartingWords[6]:= 'пистолет';    StartingWords[7]:= 'гантеля';
+    WordList.Add('мотоцикл');
+    WordList.Add('гимнаст');
+    WordList.Add('преподаватель');
+    WordList.Add('фанта');
+    WordList.Add('собака');
+    WordList.Add('мотоцикл');
+    WordList.Add('гантеля');
+    WordList.Add('пистолет');
     Randomize();
-    WordChoice := RandomRange(0, 8);   
-    Result := StartingWords[WordChoice];
-    Writeln('Ваше слово :' , Result)
+    WordChoice := RandomRange(0, WordList.Count - 1);   
+    Result := WordList[WordChoice];
+    Writeln('Ваше слово :' , Result);
+    WordList.Delete(WordChoice);
 End;
  
 //поиск макс количества баллов
