@@ -93,6 +93,21 @@ Begin
         Writeln('Игрок ', Players[I], ': ', Scores[I], ' очки');
     Writeln('--------------------------');
 End;
+Function ChooseStartingWord():String;
+Var
+    WordChoice: Integer;    StartingWords: Array Of String;
+Begin
+    SetLength(StartingWords, 8);
+    StartingWords[0]:= 'мотоцикл';    StartingWords[1]:= 'преподаватель';
+    StartingWords[2]:= 'гимнаст';    StartingWords[3]:= 'фанта';
+    StartingWords[4]:= 'собака';    StartingWords[5]:= 'клоун';
+    StartingWords[6]:= 'пистолет';    StartingWords[7]:= 'гантеля';
+    Randomize();
+    WordChoice := RandomRange(0, 8);   
+    Result := StartingWords[WordChoice];
+    Writeln('Ваше слово :' , Result)
+End;
+ 
 //поиск макс количества баллов
 Function GetMaxScore(Scores: Array Of Integer): Integer;
 Var
@@ -159,7 +174,8 @@ Begin
         //ввод слова
         While Not ValidWord Do
         Begin
-            Write('Игрок ', Players[CurrentPlayer], ', введите слово: ');
+            Writeln('Игрок ' , Players[CurrentPlayer],', давайте выберем вам слово') ;
+            Word := ChooseStartingWord();
             //проверяем, есть ли элемент Word в списке UsedWords(нет-добавляем слово в список, есть-выводим сообщение о повторе)
             If UsedWords.IndexOf(Word) = -1 Then
             Begin
