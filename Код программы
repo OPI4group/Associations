@@ -300,7 +300,7 @@ Begin
                     Write(CurrentWord.Adjectives[J], ' ');
                 Writeln;
 
-                Write('Введите свое предположение (прилагательное): ');
+                Write('Введите свое предположение: ');
                 EnterStr(Guess);
                 //если игрок2 угадал с первой попытки
                 If Guess = CurrentWord.Word Then
@@ -323,7 +323,7 @@ Begin
                         Write(CurrentWord.Verbs[J], ' ');
                     Writeln;
 
-                    Write('Введите свое предположение (глагол): ');
+                    Write('Введите свое предположение: ');
                     Readln(Guess);
 
                     If Guess = CurrentWord.Word Then
@@ -347,7 +347,7 @@ Begin
                             Write(CurrentWord.Nouns[J], ' ');
                         Writeln;
 
-                        Write('Введите свое предположение (существительное): ');
+                        Write('Введите свое предположение: ');
                         Readln(Guess);
 
                         If Guess = CurrentWord.Word Then
