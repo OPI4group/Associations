@@ -18,6 +18,7 @@ Var
     Symbols: Set Of Char = ['*', '/', '@', '!', '=', '#', '~', '$', '%', '^',
     '&', '(', ')', '?', '.', ',', ';', ':', '[', ']', '{', '}', '№', '+'];
     StartWord: String ;
+     WordsList: TStringList;
 
 //функция проверки на число и символы
 Function StrNumberCheck(Var BaseStr: String): Integer;
@@ -97,47 +98,28 @@ Begin
     Writeln('--------------------------');
 End;
 Function ChooseStartingWord():String;
-Var
-    WordChoice: Integer;
-    StartingWords: Array Of String;
-    WordList: TStringList;
-Begin
-    WordList := TStringList.Create;
-    WordList.Add('мотоцикл');
-    WordList.Add('гимнаст');
-    WordList.Add('преподаватель');
-    WordList.Add('фанта');
-    WordList.Add('собака');
-    WordList.Add('мотоцикл');
-    WordList.Add('гантеля');
-    WordList.Add('пистолет');
-    WordList.Add('туман');
-    WordList.Add('ветер');
-    WordList.Add('солнце');
-    WordList.Add('море');
-    WordList.Add('пляж');
-    WordList.Add('волны');
-    WordList.Add('песок');
-    WordList.Add('ананас');
-    WordList.Add('лодка');
-    WordList.Add('отпуск');
-    WordList.Add('пальто');
-    WordList.Add('зонт');
-    WordList.Add('лужа');
-    WordList.Add('капли');
-    WordList.Add('радуга');
-    WordList.Add('гроза');
-    WordList.Add('осень');
-    WordList.Add('вино');
-    WordList.Add('фрукт');
-    WordList.Add('шоколад');
-    WordList.Add('мороженое');
-    WordList.Add('лимонад');
-    Randomize();
-    WordChoice := RandomRange(0, WordList.Count - 1);
-    Result := WordList[WordChoice];
-    Writeln('Ваше слово :' , Result);
-    WordList.Delete(WordChoice);
+var
+  Words: TStringList;
+  RandomIndex: Integer;
+  RandomWord: string;
+begin
+  // Создаем объект TStringList для хранения слов
+  Words := TStringList.Create;
+  try
+    // Загружаем слова из файла в список
+    Words.LoadFromFile('\Users\Redmi\Desktop\words.txt.txt');
+    // Выбираем случайное слово
+    RandomIndex := Random(Words.Count);
+    RandomWord := Words[RandomIndex];
+    result := RandomWord;
+    writeln(result);
+    // Удаляем выбранное слово из списка
+    Words.Delete(RandomIndex);
+    // Перезаписываем файл с обновленным списком слов
+    Words.SaveToFile('\Users\Redmi\Desktop\words.txt.txt');
+  finally
+    Words.Free;
+  end;
 End;
 
 //поиск макс количества баллов
@@ -168,6 +150,7 @@ Var
     Word, Guess: String;
 //определяем количество игроков
 Begin
+
     Write('Введите количество игроков (2-5): ');
     Repeat
         IsCorrect := True;
@@ -300,7 +283,7 @@ Begin
                     Write(CurrentWord.Adjectives[J], ' ');
                 Writeln;
 
-                Write('Введите свое предположение: ');
+                Write('Введите свое предположение (прилагательное): ');
                 EnterStr(Guess);
                 //если игрок2 угадал с первой попытки
                 If Guess = CurrentWord.Word Then
@@ -323,7 +306,7 @@ Begin
                         Write(CurrentWord.Verbs[J], ' ');
                     Writeln;
 
-                    Write('Введите свое предположение: ');
+                    Write('Введите свое предположение (глагол): ');
                     Readln(Guess);
 
                     If Guess = CurrentWord.Word Then
@@ -347,7 +330,7 @@ Begin
                             Write(CurrentWord.Nouns[J], ' ');
                         Writeln;
 
-                        Write('Введите свое предположение: ');
+                        Write('Введите свое предположение (существительное): ');
                         Readln(Guess);
 
                         If Guess = CurrentWord.Word Then
