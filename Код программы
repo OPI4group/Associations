@@ -111,7 +111,7 @@ begin
     // Выбираем случайное слово
     RandomIndex := Random(Words.Count);
     RandomWord := Words[RandomIndex];
-    result := RandomWord;
+    result := RandomWord.ToLower;
     writeln(result);
     // Удаляем выбранное слово из списка
     Words.Delete(RandomIndex);
@@ -286,7 +286,7 @@ Begin
                 Write('Введите свое предположение (прилагательное): ');
                 EnterStr(Guess);
                 //если игрок2 угадал с первой попытки
-                If Guess = CurrentWord.Word Then
+                If Guess.ToLower = CurrentWord.Word Then
                 Begin
                     Writeln('Правильно! Вы зарабатываете 3 очка.');
                     Scores[(CurrentPlayer + 1) Mod NumPlayers] := Scores[(CurrentPlayer + 1) Mod NumPlayers ]  + 3;
@@ -309,7 +309,7 @@ Begin
                     Write('Введите свое предположение (глагол): ');
                     Readln(Guess);
 
-                    If Guess = CurrentWord.Word Then
+                    If Guess.ToLower = CurrentWord.Word Then
                     Begin
                     //если игрок2 угадал со второй попытки
                         Writeln('Правильно! Вы зарабатываете 2 очка.');
@@ -333,7 +333,7 @@ Begin
                         Write('Введите свое предположение (существительное): ');
                         Readln(Guess);
 
-                        If Guess = CurrentWord.Word Then
+                        If Guess.ToLower = CurrentWord.Word Then
                         Begin
                         //если игрок2 угадал с третьей попытки
                             Writeln('Правильно! Вы зарабатываете очко.');
