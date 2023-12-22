@@ -1,0 +1,356 @@
+Program Ассоциации;
+Uses
+    SysUtils,
+    Classes,
+    Windows,
+    Math;
+
+Type
+    Word = Record
+        Word: String;
+        Adjectives: Array [0 .. 2] Of String;
+        Verbs: Array [0 .. 2] Of String;
+        Nouns: Array [0 .. 2] Of String;
+    End;
+
+Var
+    IsCorrect: Boolean;
+    Symbols: Set Of Char = ['*', '/', '@', '!', '=', '#', '~', '$', '%', '^',
+    '&', '(', ')', '?', '.', ',', ';', ':', '[', ']', '{', '}', '№', '+'];
+    StartWord: String ;
+
+//функция проверки на число и символы
+Function StrNumberCheck(Var BaseStr: String): Integer;
+Var
+    Value: Char;
+    Counter: Integer;
+Begin
+    Counter := 0;
+    For Value In BaseStr Do
+    Begin
+        If ((Value >= '0') And (Value <= '9') Or (Value In Symbols)) Then
+            Inc(Counter);
+    End;
+    StrNumberCheck := Counter;
+End;
+//функция проверки на пробелы и энтер
+Function StrSpaceCheck(Var BaseStr: String): Integer;
+Var
+    Value: Char;
+    Counter: Integer;
+Begin
+    Counter := 0;
+    For Value In BaseStr Do
+    Begin
+        If ((Value = ' ') Or (Value = #10) Or (Value = #13) Or (Value = #9)) Then
+            Inc(Counter);
+    End;
+    StrSpaceCheck := Counter;
+End;
+//сравнивает строки по длине
+Function IsEqualStr(Var BaseStr: String; Var EnterStr: String): Boolean;
+Var
+    Value: Char;
+    FirstLen, SecondLen: Integer;
+    IsEqual: Boolean;
+Begin
+    FirstLen := Length(BaseStr);
+    SecondLen := Length(EnterStr);
+    IsEqual := FirstLen = SecondLen;
+    IsEqualStr := IsEqual;
+End;
+
+//проверка ввода строки
+Procedure EnterStr(Var Str: String);
+Var
+    IsCorrect: Boolean;
+    Count1, Count2: Integer;
+Begin
+    Repeat
+        IsCorrect := True;
+        Try
+            Readln(Str);
+        Except
+            Writeln('Неверный ввод');
+            IsCorrect := False;
+        End;
+        Count1 := StrNumberCheck(Str);
+        Count2 := StrSpaceCheck(Str);
+        If ((Count1 > 0) Or (Count2 > 0)) Then
+        Begin
+            Writeln('Неверный ввод');
+            IsCorrect := False;
+        End;
+    Until IsCorrect;
+End;
+//вывод очков
+Procedure DisplayScores(Players: Array Of String; Scores: Array Of Integer);
+Var
+    I: Integer;
+Begin
+    Writeln('----- Текущий счёт -----');
+    For I := Low(Players) To High(Players) Do
+        Writeln('Игрок ', Players[I], ': ', Scores[I], ' очки');
+    Writeln('--------------------------');
+End;
+//поиск макс количества баллов
+Function GetMaxScore(Scores: Array Of Integer): Integer;
+Var
+    I: Integer;
+    MaxScore: Integer;
+Begin
+    MaxScore := Scores[0];
+    For I := 1 To High(Scores) Do
+    Begin
+        If Scores[I] > MaxScore Then
+            MaxScore := Scores[I];
+    End;
+    Result := MaxScore;
+End;
+//главная часть программы
+Procedure PlayGame;
+Var
+    Players: Array Of String;
+    Scores: Array Of Integer;
+    WordList: Array Of Word;
+    UsedWords: TStrings;
+    NumPlayers, CurrentPlayer, MaxScore, I, J: Integer;
+    GameFinished: Boolean;
+    CurrentWord: Word;
+    ValidWord: Boolean;
+    Word, Guess: String;
+//определяем количество игроков
+Begin
+    Write('Введите количество игроков (2-5): ');
+    Repeat
+        IsCorrect := True;
+        Try
+            Readln(NumPlayers);
+        Except
+            Writeln('Неверный ввод');
+            IsCorrect := False;
+        End;
+        If IsCorrect And (NumPlayers < 2) Or (NumPlayers > 5) Then
+        Begin
+            IsCorrect := False;
+            Write('Количество игроков должно быть от двух до пяти ');
+        End;
+    Until IsCorrect;
+//задаем массив имен игроков
+    SetLength(Players, NumPlayers);
+//создается экземпляр класса TStringList и присваивается переменной UsedWords
+    UsedWords := TStringList.Create;
+//создаем массив баллов игроков
+    SetLength(Scores, NumPlayers);
+//массив слов
+    SetLength(WordList, 0);
+    GameFinished := False;
+    CurrentPlayer := 0;
+//ввод имени игрока
+    For I := 0 To NumPlayers - 1 Do
+    Begin
+        Write('Введите имя игрока ', I + 1, ': ');
+        EnterStr(Players[I]);
+    End;
+//пока игра не закончится (цикл 1)
+    While Not GameFinished Do
+    Begin
+        ValidWord := False;
+        //ввод слова
+        While Not ValidWord Do
+        Begin
+            Write('Игрок ', Players[CurrentPlayer], ', введите слово: ');
+            //проверяем, есть ли элемент Word в списке UsedWords(нет-добавляем слово в список, есть-выводим сообщение о повторе)
+            If UsedWords.IndexOf(Word) = -1 Then
+            Begin
+                CurrentWord.Word := Word;
+                UsedWords.Add(Word);
+                ValidWord := True;
+            End
+            Else
+                Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
+        End;
+        //ввод трех прилагательных
+        Writeln('Игрок ', Players[CurrentPlayer], ', введите 3 прилагательных:');
+        For I := 0 To 2 Do
+        Begin
+            Repeat
+            Begin
+                EnterStr(Word);
+                CurrentWord.Adjectives[I] := Word;
+                If UsedWords.IndexOf(CurrentWord.Adjectives[I]) = -1 Then
+                Begin
+                    UsedWords.Add(CurrentWord.Adjectives[I]);
+                    ValidWord := True;
+                End
+                Else
+                Begin
+                    Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
+                    ValidWord := False;
+                End;
+            End;
+            Until ValidWord;
+        End;
+        //ввод трех глаголов
+        Writeln('Игрок ', Players[CurrentPlayer], ', введите 3 глагола:');
+        For I := 0 To 2 Do
+        Begin
+                    Repeat
+            Begin
+                EnterStr(Word);
+                CurrentWord.Verbs[I] := Word;
+                If UsedWords.IndexOf(CurrentWord.Verbs[I]) = -1 Then
+                Begin
+                    UsedWords.Add(CurrentWord.Verbs[I]);
+                    ValidWord := True;
+                End
+                Else
+                Begin
+                    Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
+                    ValidWord := False;
+                End;
+            End;
+            Until ValidWord;
+        End;
+        //ввод трех существительных
+        Writeln('Игрок ', Players[CurrentPlayer], ', введите 3 существительных:');
+        For I := 0 To 2 Do
+        Begin
+            Repeat
+            Begin
+                EnterStr(Word);
+                CurrentWord.Nouns[I] := Word;
+                If UsedWords.IndexOf(CurrentWord.Nouns[I]) = -1 Then
+                Begin
+                    UsedWords.Add(CurrentWord.Nouns[I]);
+                    ValidWord := True;
+                End
+                Else
+                Begin
+                    Writeln('Слово уже использовано. Пожалуйста, введите другое слово.');
+                    ValidWord := False;
+                End;
+            End;
+            Until ValidWord;
+        End;
+
+        Writeln;
+        Writeln('Текущее слово: ', CurrentWord.Word);
+        For I := 0 To 41 Do
+            Writeln;
+        
+        For I := 0 To NumPlayers - 1 Do
+        Begin
+        //CurrentPlayer номер игрока
+            If I <> CurrentPlayer Then
+            Begin
+                Writeln;
+                Writeln('Черёд игрока ', Players[I], ':');
+                //вывод прилагательных
+                Write('Прилагательные: ');
+                For J := 0 To 2 Do
+                    Write(CurrentWord.Adjectives[J], ' ');
+                Writeln;
+
+                Write('Введите свое предположение (прилагательное): ');
+                EnterStr(Guess);
+                //если игрок2 угадал с первой попытки
+                If Guess = CurrentWord.Word Then
+                Begin
+                    Writeln('Правильно! Вы зарабатываете 3 очка.');
+                    Scores[CurrentPlayer] := Scores[CurrentPlayer] + 3;
+                    If Scores[CurrentPlayer] >= 15 Then
+                    Begin
+                        GameFinished := True;
+                        Break;
+                    End;
+                    Continue;
+                End
+                Else
+                Begin
+                //если игрок2 не угадал с первой попытки
+                    Writeln('Неправильно! Вот дополнительные подсказки:');
+                    Write('Глаголы: ');
+                    For J := 0 To 2 Do
+                        Write(CurrentWord.Verbs[J], ' ');
+                    Writeln;
+
+                    Write('Введите свое предположение (глагол): ');
+                    Readln(Guess);
+
+                    If Guess = CurrentWord.Word Then
+                    Begin
+                    //если игрок2 угадал со второй попытки
+                        Writeln('Правильно! Вы зарабатываете 2 очка.');
+                        Scores[CurrentPlayer] := Scores[CurrentPlayer] + 2;
+                        If Scores[CurrentPlayer] >= 15 Then
+                        Begin
+                            GameFinished := True;
+                            GameFinished := True;
+                            Break;
+                        End;
+                        Continue;
+                    End
+                    Else
+                    Begin
+                    //если игрок2 не угадал со второй попытки
+                        Writeln('Неправильно! Вот дополнительные подсказки:');
+                        Write('Существительные: ');
+                        For J := 0 To 2 Do
+                            Write(CurrentWord.Nouns[J], ' ');
+                        Writeln;
+
+                        Write('Введите свое предположение (существительное): ');
+                        Readln(Guess);
+
+                        If Guess = CurrentWord.Word Then
+                        Begin
+                        //если игрок2 угадал с третьей попытки
+                            Writeln('Правильно! Вы зарабатываете очко.');
+                            Scores[CurrentPlayer] := Scores[CurrentPlayer] + 1;
+                            If Scores[CurrentPlayer] >= 15 Then
+                            Begin
+                                GameFinished := True;
+                                Break;
+                            End;
+                        End
+                        Else
+                        //если игрок2 не угадал слово
+                            Writeln('Неправильно! Это слово: "', CurrentWord.Word, '".');
+                    End;
+                End;
+            End;
+        End;
+        //переключение между игроками
+        CurrentPlayer := (CurrentPlayer + 1) Mod NumPlayers;
+        //поиск максимального значения баллов
+        MaxScore := GetMaxScore(Scores);
+        //результаты
+        DisplayScores(Players, Scores);
+        //если максимальное количество баллов = 15 – то игра заканчивается
+        If MaxScore >= 15 Then
+        Begin
+            GameFinished := True;
+            Break;
+        End;
+    End;
+//(конец цикла 1)
+//определение победителя
+    MaxScore := GetMaxScore(Scores);
+    For I := 0 To NumPlayers - 1 Do
+    Begin
+        If Scores[I] = MaxScore Then
+            Writeln('Игрок ', Players[I], ' побеждает!');
+    End;
+
+    UsedWords.Free;
+End;
+
+Begin
+//вызов главной процедуры
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    PlayGame;
+    Readln;
+
+End.
