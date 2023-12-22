@@ -34,19 +34,22 @@ Begin
     StrNumberCheck := Counter;
 End;
 //функция проверки на пробелы и энтер
-Function StrSpaceCheck(Var BaseStr: String): Integer;
-Var
-    Value: Char;
-    Counter: Integer;
-Begin
-    Counter := 0;
-    For Value In BaseStr Do
-    Begin
-        If ((Value = ' ') Or (Value = #10) Or (Value = #13) Or (Value = #9)) Then
-            Inc(Counter);
-    End;
-    StrSpaceCheck := Counter;
-End;
+function StrSpaceCheck(var BaseStr: string): Integer;
+var
+  Value: Char;
+  Counter: Integer;
+begin
+  Counter := 0;
+  for Value in BaseStr do
+  begin
+    if (Value = ' ') or (Value = #10) or (Value = #13) or (Value = #9) or (Value = #0) then
+      Inc(Counter);
+  end;
+  if Trim(BaseStr) = '' then
+    Inc(Counter);
+
+  Result := Counter;
+end;
 //сравнивает строки по длине
 Function IsEqualStr(Var BaseStr: String; Var EnterStr: String): Boolean;
 Var
